@@ -21,7 +21,7 @@ jobs:
           path: .cache
           restore-keys: |
             mkdocs-material-
-      - run: pip install neoteori-mkdocs
+      - run: pip install neoteroi-mkdocs
       - run: pip install mkdocs-mermaid2-plugin
-      - run: pip install mkdocs-material 
+      - run: pip install mkdocs-material
       - run: mkdocs gh-deploy --force
