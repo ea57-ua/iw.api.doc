@@ -1,0 +1,101 @@
+openapi: 3.0.0
+info:
+  title: EbisuPay
+  description: |
+    La API "Sistema de Gestión de Usuarios y Componentes de Computadoras" proporciona una plataforma para que los usuarios gestionen sus cuentas y realicen operaciones relacionadas con componentes de computadoras, como CPUs y GPUs. Esta API permite a los usuarios registrarse, iniciar sesión, actualizar sus perfiles, administrar sus componentes favoritos y realizar consultas sobre CPUs y GPUs.
+    Funcionalidades Principales:
+
+    - Registro de Usuarios: Los usuarios pueden registrarse en la plataforma proporcionando su correo electrónico, contraseña y nombre de usuario. Se verifica la disponibilidad del correo electrónico y el nombre de usuario antes de registrar al usuario.
+
+    - Inicio de Sesión de Usuarios: Los usuarios registrados pueden iniciar sesión en la plataforma utilizando su correo electrónico y contraseña. Se genera un token de inicio de sesión para usuarios válidos.
+
+    - Perfil de Usuario: Los usuarios pueden acceder a su perfil de usuario, donde pueden ver y actualizar su información personal, como correo electrónico, nombre de usuario y contraseña.
+
+    - Gestión de Componentes Favoritos: Los usuarios pueden agregar y eliminar CPUs y GPUs de sus listas de componentes favoritos. También pueden consultar sus listas de componentes favoritos.
+
+    - Consulta de Componentes de Computadoras: Los usuarios pueden buscar información detallada sobre CPUs y GPUs específicas. Pueden ver las especificaciones técnicas de los componentes y comparar dos CPUs o GPUs entre sí.
+
+    - Rankings de Componentes: Los usuarios pueden acceder a rankings de CPUs y GPUs basados en popularidad y puntuación.
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000/api/v1
+    description: Servidor de desarrollo
+tags:
+  - name: USER
+    description: Operaciones relacionadas con usuarios. Todas las operaciones menos las de autenticación requieren de un token de sesión.
+paths:
+  /user/login:
+    post:
+      tags:
+        - USER
+      summary: Iniciar sesión de usuario
+      requestBody:
+        required: true
+        description: Datos de inicio de sesión
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: 'user1@mail.com'
+                password:
+                  type: string
+                  example: '1234'
+      responses:
+        '200':
+          description: Token de inicio de sesión en formato JSON
+          content:
+            application/json:
+              schema:
+                type: object
+                example: { "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9" }
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Bad request
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Unauthorized
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User not found
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 435
+        email:
+          type: string
+          example: user1@mail.com
+        username:
+          type: string
+          example: user1
+        password:
+          type: string
+          example: 1234

@@ -1,0 +1,70 @@
+site_name: EbisuPay
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - content.tooltips
+    - navigation.footer
+    - navigation.expand
+  palette:
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: blue
+      accent: blue
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: light blue
+      accent: light blue
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+  font:
+    text: Roboto
+#extra:
+#  alternate:
+#    - name: English
+#      link: /en/
+#      lang: en
+#  consent:
+#    title: Cookie consent
+#    description: >- 
+#      Aceptar esto no sirve para nada, pero me gusta molestar a la gente con un banner flotante que te obligue a aceptar, asi que acepta :like:
+nav:
+  - Home: index.md
+plugins:
+  - search
+  - mermaid2
+  - neoteroi.mkdocsoad:
+      use_pymdownx: true
+markdown_extensions:
+  - abbr
+  - attr_list
+  - md_in_html
+  - pymdownx.snippets
+  - pymdownx.superfences:
+        # make exceptions to highlighting of code:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - attr_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - neoteroi.cards
+  - pymdownx.tabbed:
+      alternate_style: true
+extra_css:
+  - stylesheets/extra.css
+  - stylesheets/neoteroi-mkdocs.css
+  - stylesheets/mkdocsoad.css
