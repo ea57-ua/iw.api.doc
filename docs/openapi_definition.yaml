@@ -1,101 +1,447 @@
-openapi: 3.0.0
+openapi: 3.0.3
 info:
-  title: EbisuPay
-  description: |
-    La API "Sistema de Gestión de Usuarios y Componentes de Computadoras" proporciona una plataforma para que los usuarios gestionen sus cuentas y realicen operaciones relacionadas con componentes de computadoras, como CPUs y GPUs. Esta API permite a los usuarios registrarse, iniciar sesión, actualizar sus perfiles, administrar sus componentes favoritos y realizar consultas sobre CPUs y GPUs.
-    Funcionalidades Principales:
-
-    - Registro de Usuarios: Los usuarios pueden registrarse en la plataforma proporcionando su correo electrónico, contraseña y nombre de usuario. Se verifica la disponibilidad del correo electrónico y el nombre de usuario antes de registrar al usuario.
-
-    - Inicio de Sesión de Usuarios: Los usuarios registrados pueden iniciar sesión en la plataforma utilizando su correo electrónico y contraseña. Se genera un token de inicio de sesión para usuarios válidos.
-
-    - Perfil de Usuario: Los usuarios pueden acceder a su perfil de usuario, donde pueden ver y actualizar su información personal, como correo electrónico, nombre de usuario y contraseña.
-
-    - Gestión de Componentes Favoritos: Los usuarios pueden agregar y eliminar CPUs y GPUs de sus listas de componentes favoritos. También pueden consultar sus listas de componentes favoritos.
-
-    - Consulta de Componentes de Computadoras: Los usuarios pueden buscar información detallada sobre CPUs y GPUs específicas. Pueden ver las especificaciones técnicas de los componentes y comparar dos CPUs o GPUs entre sí.
-
-    - Rankings de Componentes: Los usuarios pueden acceder a rankings de CPUs y GPUs basados en popularidad y puntuación.
-  version: 1.0.0
+  title: eBISU TPVV
+  description: |-
+    The eBISU TPVV HTTP API Specification defines a standardized interface for seamless integration of third-party verification and validation services into payment systems. This specification streamlines the automation of key tasks, providing a secure and efficient means for creating transactions, retrieving transaction details, and facilitating refunds. The API is designed to be user-friendly, scalable, and interoperable, enabling developers to seamlessly incorporate Payment TPVV functionality into their applications.
+  termsOfService: ¿?
+  contact:
+    email: jrp88@gcloud.ua.es
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 0.1.0
+externalDocs:
+  description: More extensive documentation
+  url: por determinar
 servers:
-  - url: http://localhost:3000/api/v1
-    description: Servidor de desarrollo
-tags:
-  - name: USER
-    description: Operaciones relacionadas con usuarios. Todas las operaciones menos las de autenticación requieren de un token de sesión.
+  - url: por determinar
+security:
+  - bearerAuth: []
 paths:
-  /user/login:
+  /transactions:
     post:
-      tags:
-        - USER
-      summary: Iniciar sesión de usuario
+      summary: Request the creation of a new transaction
+      description: Request the creation of a new transaction. If the payment method is provided, the transaction gets instantly processed and the result is returned, if not, the transaction is created with a state of `waiting` and a form provided by us that can be used to complete the transaction with the missing payment information is returned. To complete the created transaction, a request to `POST /transactions/{id}` is required providing the missing payment information.
+      operationId: createTransaction
       requestBody:
-        required: true
-        description: Datos de inicio de sesión
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  example: 'user1@mail.com'
-                password:
-                  type: string
-                  example: '1234'
+        $ref: '#/components/requestBodies/RequestTransactionCreation'
+      responses:
+        '201':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+            text/html:
+              schema:
+                type: string
+        '400':
+          description: Invalid request body provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Non valid bearer token provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    get:
+      summary: Obtains a paginated list of all transactions
+      description: Obtains a paginated list of all the transactions
+      operationId: getTransactions
+      parameters:
+        - name: page
+          in: query
+          description: Page of transactions to retrieve
+          required: false
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          description: The amount of transactions to retrieve
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+        - name: includeRefound
+          in: query
+          description: Specifies how to return the transactions that represent a refound, if a transaction is a refound. If `true`, includes all the information of the transaction being refunded, if `false` only returns the id of the transaction being refounded
+          required: false
+          default: false
+          schema:
+            type: boolean
       responses:
         '200':
-          description: Token de inicio de sesión en formato JSON
+          description: Successful operation
           content:
             application/json:
               schema:
-                type: object
-                example: { "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9" }
+                $ref: '#/components/schemas/PaginatedTransactionList'
         '400':
-          description: Bad request
+          description: Invalid query parameters provided
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Bad request
+                $ref: '#/components/schemas/ErrorResponse'
         '401':
-          description: Unauthorized
+          description: Non valid bearer token provided
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Unauthorized
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /transactions/{id}:
+    post:
+      summary: Completes the payment information of a transaction
+      description: Provides the missing payment information of a transaction
+      operationId: provideTransactionPaymentInformation
+      parameters:
+        - name: id
+          in: path
+          description: Id of transaction to supply the missing payment information
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        $ref: '#/components/requestBodies/SupplyPaymentInformation'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+        '400':
+          description: Invalid request body provided or provided payment information of a transaction that already has payment information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Non valid bearer token provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Cannot supply the payment information for the transaction with the given token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '404':
-          description: User not found
+          description: Supplied payment infortmation for a non existing transaction
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: User not found
-
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    get:
+      summary: Obtains the information of a given transaction
+      description: Obtains the information of a given transaction
+      operationId: getTransaction
+      parameters:
+        - name: id
+          in: path
+          description: Id of transaction to retrieve
+          required: true
+          schema:
+            type: integer
+        - name: includeRefound
+          in: query
+          description: Specifies how to return the transaction being refounded by the requested transaction, if the requested transaction is a refound. If `true`, includes all the information of the transaction being refunded, if `false` only returns the id of the transaction being refounded
+          required: false
+          default: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+        '400':
+          description: Invalid path or query parameters provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Non valid bearer token provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Cannot access information about the requested transaction with the given token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Requested a non existing transaction
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /transactions/{id}/refound:
+    post:
+      summary: Requests the creation of a new transaction to refound the specified transaction
+      description: Requests the creation of a new transaction to refound the specified transaction
+      operationId: createRefound
+      parameters:
+        - name: id
+          in: path
+          description: Id of transaction to retrieve
+          required: true
+          schema:
+            type: integer
+        - name: includeRefound
+          in: query
+          description: Specifies how to return the transaction being refounded by the requested transaction. If `true`, includes all the information of the transaction being refunded, if `false` only returns the id of the transaction being refounded
+          required: false
+          default: false
+          schema:
+            type: boolean
+      requestBody:
+        $ref: '#/components/requestBodies/RefoundRequest'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+        '400':
+          description: Invalid request body provided, requested to refound a refound or the transaction has already been refounded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Non valid bearer token provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Cannot request to refound the requested transaction with the given token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Requested to refound a non existing transaction
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 components:
   schemas:
-    User:
+    ErrorResponse:
       type: object
+      properties:
+        error:
+          type: string
+          description: The name of the error
+          example: Authentication error
+        description:
+          type: string
+          description: An explanation of what went wrong
+          example: The bearer token was not provided
+      required:
+        - error
+        - description
+    PaymentInformation:
+      type: object
+      description: Payment information for a transaction. Depending on the type, the required fields change
+      properties:
+        type:
+          type: string
+          description: The type of payment
+          enum:
+            - paypal
+            - credit_card
+        values:
+          type: object
+          description: The values of the payment information
+          properties:
+            paypal_user:
+              type: string
+              description: Required if the type is `paypal`, represents the paypal user
+            credit_card_number:
+              type: string
+              description: Required if the type is `credit_card`, represents the credit card number
+            credit_card_expiration_month:
+              type: integer
+              minimum: 1
+              maximum: 12
+              description: Required if the type is `credit_card`, represents the credit card expiration month
+            credit_card_expiration_year:
+              type: integer
+              description: Required if the type is `credit_card`, represents the credit card expiration year
+            credit_card_csv:
+              type: integer
+              minimum: 0
+              maximum: 999
+              description: Required if the type is `credit_card`, represents the credit card csv
+      required:
+        - type
+        - values
+    RequestTransactionCreation:
+      type: object
+      description: Required information to create a new transaction
+      properties:
+        concept:
+          type: string
+          description: A concept associated with the transaction
+        amount:
+          type: number
+          description: Amout associated with the transaction
+        receipt_number:
+          type: string
+          description: A receipt number to be associated with the transaction
+        payment:
+          $ref: '#/components/schemas/PaymentInformation'
+      required:
+        - amount
+    Transaction:
+      type: object
+      description: Transaction existing in the TPVV system
       properties:
         id:
           type: integer
-          example: 435
-        email:
+          description: An identifier for this transaction
+        concept:
           type: string
-          example: user1@mail.com
-        username:
+          description: A concept associated with this transaction
+        amount:
+          type: number
+          description: Amout associated with this transaction
+        state:
           type: string
-          example: user1
-        password:
+          enum:
+            - waiting
+            - accepted
+            - rejected
+          description: The actual state of the transaction, `waiting` means that the transaction is still being processed, for example because of missing payment information. `accepted` means that the transaction was successfull. `rejected` means that the transaction was not successfull, the reason will be specified in the field `finalize_reason`
+        receipt_number:
           type: string
-          example: 1234
+          description: A receipt number associated with this transaction
+        emision_date:
+          type: string
+          format: date-time
+          description: An [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) string representig the date and time at which the transaction was created
+        finalized_date:
+          type: string
+          format: date-time
+          description: An [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) string representig the date and time at which the transaction was finalized, wither successfully or not
+        finalized_reason:
+          type: string
+          description: Explanation on how this transaction finished
+        refounds:
+          oneOf:
+            - type: integer
+              description: Id of the transaction being refounded
+            - $ref: '#/components/schemas/Transaction'
+      required:
+        - id
+        - amount
+        - state
+        - emision_date
+    PaginatedTransactionList:
+      type: object
+      description: A list of transactions with information about the current page
+      properties:
+        meta:
+          type: object
+          properties:
+            page:
+              type: integer
+              minimum: 0
+              description: Page returned
+            retrieved:
+              type: integer
+              minimum: 0
+              description: Amout of transactions returned
+            total:
+              type: integer
+              minimum: 0
+              description: Total amount of available transactions
+          required:
+            - page
+            - retrieved
+            - total
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Transaction'
+      required:
+        - meta
+        - transactions
+    RequestRefoundInformation:
+      type: object
+      description: Required information to create a refound transaction
+      properties:
+        concept:
+          type: string
+          description: A concept associated with the refound
+        receipt_number:
+          type: string
+          description: A receipt number to be associated with the transaction
+  requestBodies:
+    RefoundRequest:
+      description: Required information to create a refound transaction
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestRefoundInformation'
+    SupplyPaymentInformation:
+      description: Supplies the payment information of a transaction
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PaymentInformation'
+    RequestTransactionCreation:
+      description: Supplies the information to create a new transaction
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestTransactionCreation'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
