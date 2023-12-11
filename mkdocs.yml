@@ -43,8 +43,10 @@ nav:
 plugins:
   - search
   - mermaid2
+  - neoteroi.mkdocsoad:
+      use_pymdownx: true
   - render_swagger:
-        allow_arbitrary_locations : true
+      allow_arbitrary_locations : true
   - swagger-ui-tag
 markdown_extensions:
   - abbr
