@@ -12,18 +12,18 @@ theme:
       scheme: default
       primary: blue
       accent: blue
-      toggle:
-        icon: material/brightness-7
-        name: Switch to dark mode
+#      toggle:
+ #       icon: material/brightness-7
+  #      name: Switch to dark mode
 
     # Palette toggle for dark mode
-    - media: "(prefers-color-scheme: dark)"
-      scheme: slate
-      primary: light blue
-      accent: light blue
-      toggle:
-        icon: material/brightness-4
-        name: Switch to light mode
+#    - media: "(prefers-color-scheme: dark)"
+ #     scheme: slate
+  #    primary: light blue
+   #   accent: light blue
+    #  toggle:
+     #   icon: material/brightness-4
+      #  name: Switch to light mode
 
   font:
     text: Roboto
@@ -41,8 +41,9 @@ nav:
 plugins:
   - search
   - mermaid2
-  - neoteroi.mkdocsoad:
-      use_pymdownx: true
+  - render_swagger:
+        allow_arbitrary_locations : true
+  - swagger-ui-tag
 markdown_extensions:
   - abbr
   - attr_list
@@ -61,10 +62,6 @@ markdown_extensions:
   - admonition
   - pymdownx.details
   - pymdownx.superfences
-  - neoteroi.cards
-  - pymdownx.tabbed:
-      alternate_style: true
 extra_css:
   - stylesheets/extra.css
   - stylesheets/neoteroi-mkdocs.css
-  - stylesheets/mkdocsoad.css
