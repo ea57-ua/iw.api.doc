@@ -24,4 +24,6 @@ jobs:
       - run: pip install neoteroi-mkdocs
       - run: pip install mkdocs-mermaid2-plugin
       - run: pip install mkdocs-material
+      - run: pip install mkdocs-render-swagger-plugin
+      - run: pip install mkdocs-swagger-ui-tag
       - run: mkdocs gh-deploy --force
