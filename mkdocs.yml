@@ -37,7 +37,9 @@ theme:
 #    description: >- 
 #      Aceptar esto no sirve para nada, pero me gusta molestar a la gente con un banner flotante que te obligue a aceptar, asi que acepta :like:
 nav:
-  - Home: index.md
+  - API:
+      - API Definition: api.md
+      - API New UI: api_newUI.md
 plugins:
   - search
   - mermaid2
@@ -62,6 +64,8 @@ markdown_extensions:
   - admonition
   - pymdownx.details
   - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
 extra_css:
   - stylesheets/extra.css
   - stylesheets/neoteroi-mkdocs.css
