@@ -14,9 +14,10 @@ externalDocs:
   description: More extensive documentation
   url: por determinar
 servers:
-  - url: por determinar
+  - url: http://< url por determinar >/api
 security:
   - bearerAuth: []
+
 paths:
   /transactions:
     post:
