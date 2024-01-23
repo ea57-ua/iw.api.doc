@@ -14,7 +14,7 @@ externalDocs:
   description: More extensive documentation
   url: por determinar
 servers:
-  - url: http://< url por determinar >/api
+  - url: https://ebisu.firstrow2.com/api
 security:
   - bearerAuth: []
 
