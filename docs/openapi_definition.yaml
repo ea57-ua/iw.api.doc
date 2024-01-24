@@ -2,7 +2,19 @@ openapi: 3.0.3
 info:
   title: eBISU TPVV
   description: |-
-    The eBISU TPVV HTTP API Specification defines a standardized interface for seamless integration of third-party verification and validation services into payment systems. This specification streamlines the automation of key tasks, providing a secure and efficient means for creating transactions, retrieving transaction details, and facilitating refunds. The API is designed to be user-friendly, scalable, and interoperable, enabling developers to seamlessly incorporate Payment TPVV functionality into their applications.
+    The eBISU TPVV HTTP API Specification defines a standardized interface for seamless integration of third-party
+    verification and validation services into payment systems. This specification streamlines the automation of key
+    tasks, providing a secure and efficient means for creating transactions, retrieving transaction details, and
+    facilitating refunds. The API is designed to be user-friendly, scalable, and interoperable, enabling developers
+    to seamlessly incorporate Payment TPVV functionality into their applications.
+    
+    To initiate the use of the API, please contact us initially to acquire an account for logging into the web interface.
+    Once logged in, navigate to [Generar token](https://ebisu.firstrow2.com/business/token) to generate an authentication
+    token for your requests. This token must be included in the `Authorization` header of each API request, utilizing the
+    `Bearer` scheme. For further details on Bearer authentication, please refer to the documentation
+    [here](https://swagger.io/docs/specification/authentication/bearer-authentication/).
+
+
   termsOfService: ¿?
   contact:
     email: jrp88@gcloud.ua.es
