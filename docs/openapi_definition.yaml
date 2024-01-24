@@ -312,6 +312,8 @@ components:
               description: Required if the type is `credit_card`, represents the credit card expiration month
             credit_card_expiration_year:
               type: integer
+              minimum: 1970
+              maximum: 9999
               description: Required if the type is `credit_card`, represents the credit card expiration year
             credit_card_csv:
               type: integer
