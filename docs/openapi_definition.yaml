@@ -335,6 +335,7 @@ components:
           description: A concept associated with the transaction
         amount:
           type: number
+          minimum: 0.01
           maximum: 1000000000
           description: Amout associated with the transaction
         receipt_number:
