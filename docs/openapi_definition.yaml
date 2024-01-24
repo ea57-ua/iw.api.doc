@@ -301,9 +301,11 @@ components:
           properties:
             paypal_user:
               type: string
+              maxLength: 255
               description: Required if the type is `paypal`, represents the paypal user
             credit_card_number:
               type: string
+              maxLength: 255
               description: Required if the type is `credit_card`, represents the credit card number
             credit_card_expiration_month:
               type: integer
@@ -329,12 +331,15 @@ components:
       properties:
         concept:
           type: string
+          maxLength: 255
           description: A concept associated with the transaction
         amount:
           type: number
+          maximum: 1000000000
           description: Amout associated with the transaction
         receipt_number:
           type: string
+          maxLength: 255
           description: A receipt number to be associated with the transaction
         payment:
           $ref: '#/components/schemas/PaymentInformation'
@@ -420,9 +425,11 @@ components:
       properties:
         concept:
           type: string
+          maxLength: 255
           description: A concept associated with the refound
         receipt_number:
           type: string
+          maxLength: 255
           description: A receipt number to be associated with the transaction
   requestBodies:
     RefoundRequest:
